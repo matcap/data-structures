@@ -38,7 +38,7 @@ vector *vector_new(size_t elem_size, size_t init_size){
     v->used = 0;
 
     // Defalut vector growth is exponential by a factor of 2 (new size = size^2)
-    v->growth = EXPONENTIAL;
+    v->growth = GEOMETRIC;
     v->growth_factor = 1.5;
 
     return v;

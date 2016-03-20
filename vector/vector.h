@@ -3,13 +3,14 @@
 
 #include <stdlib.h>
 
+// Faster and more readable than get
 #define VECTOR_GET(vec, index, type) (*((type*) vector_get(vec, index)))
 
 typedef struct vector vector;  // Struct representing a dynamic array
 
 enum growth_type{
     LINEAR,         // new size = size + growth factor
-    EXPONENTIAL     // new size = size * growth factor
+    GEOMETRIC       // new size = size * growth factor
 };
 
 // Allocates memory and fills vector structure

@@ -1,65 +1,61 @@
 #include <stdio.h>
-#include "vector.h"
+#include "vector/vector.h"
 #include <time.h>
 
 typedef struct {
-    int i;
-    double d;
-    char str[6];
-} TestStruct;
+    int index;
+    char value[10];
+} data;
+
+
+/*
+ *  #################### VECTOR ####################
+ */
+void vector_example(){
+    // Create a vector of data with initial size of 2
+    vector* vec = vector_new(sizeof(data), 2);
+
+    // Create an array of data
+    data arr[] = {
+        {1, "Data 1"},
+        {2, "Data 2"},
+        {3, "Data 3"},
+        {4, "Data 4"},
+        {5, "Data 5"}
+    };
+
+    // Add each data to our vector
+    for(int i=0; i<5; i++){
+        vector_add(vec, &arr[i]);
+    }
+
+    // Change one of our values to something different
+    data newdata = {6, "Data 6"};
+    vector_set(vec, 2, &newdata);
+
+    // Remove one element
+    vector_remove(vec, 3);
+
+    // Print vector to screen
+    for(int i=0; i<vector_size(vec); i++){
+        // Get each element using explicit casts
+        data elem = *((data*) vector_get(vec, i));
+        // Or use the more readable macro
+        elem = VECTOR_GET(vec, i, data);
+
+        printf("Vector[%d] = {%d, %s}\n", i, elem.index, elem.value);
+    }
+
+    // Free memory
+    vector_delete(vec);
+}
+
+
+
 
 int main(void)
 {
-    // Create a vector of MyStructs with initial size of 5
-    vector *vec = vector_new(sizeof(TestStruct), 5);
-
-    TestStruct s = {23124, 32132.321, "HELLO\0"};
-
-    // N. of iterations
-    const unsigned long iter = 100000000;
-    const unsigned long bytes = sizeof(TestStruct) * iter;
-
-    printf("Vector final size: %lu Bytes (%f MB)\n", bytes, (double)(bytes) / (1024.0*1024.0));
-
-    {
-        // Start clock
-        clock_t start = clock();
-
-        // Perform multiple add()
-        for(int i=0; i<iter; i++){
-            vector_add(vec, &s);
-        }
-
-        // Stop clock
-        clock_t end = clock();
-        double millis = (double)(end - start) / CLOCKS_PER_SEC * 1000.0;
-
-        printf("\nAddition test: %d additions\n", vector_size(vec));
-        printf("Total time: %f ms\n", millis);
-        printf("Average time: %f ms\n", millis / (double) iter);
-    }
-
-    {
-        // Start clock
-        clock_t start = clock();
-
-        // Perform multiple remove()
-        for(int i=0; i<10; i++){
-            vector_remove(vec, 0);
-        }
-
-        // Stop clock
-        clock_t end = clock();
-        double millis = (double)(end - start) / CLOCKS_PER_SEC * 1000.0;
-
-        printf("\nRemove test: %d removals\n", iter);
-        printf("Total time: %f ms\n", millis);
-        printf("Average time: %f ms\n", millis / (double) iter);
-    }
-
-
-
-    vector_delete(vec);
+    vector_example();
     return 0;
 }
 
