@@ -4,9 +4,10 @@
 #include <stdlib.h>
 
 typedef struct linked_list_s*  linked_list;    // Structure representing a single linked list of nodes
+typedef void (*free_fun)(void*);               // Custom free function
 
 // Allocates memory for a new list
-linked_list list_new(size_t elem_size);
+linked_list list_new(size_t elem_size, free_fun fun);
 
 // Appends the element to the list
 void list_add_tail(linked_list list, const void* elem);

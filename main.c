@@ -16,6 +16,12 @@ static data arr[] = {
     {4, "Data 4"}
 };
 
+// Custom free function
+void free_data(void* elem){
+    data* d = (data*) elem;
+    printf("Deleted {%d, %s}\n", d->index, d->value);
+}
+
 
 /*
  *  #################### VECTOR ####################
@@ -24,7 +30,7 @@ void vector_example(){
     printf("\nVECTOR\n");
 
     // Create a vector of data with initial size of 2
-    vector vec = vector_new(sizeof(data), 1);
+    vector vec = vector_new(sizeof(data), 1, free_data);
 
     // Add each data to our vector
     for(int i=0; i<5; i++){
@@ -61,7 +67,7 @@ void linked_list_example(){
 
 
     // Allocate a new list
-    linked_list list = list_new(sizeof(data));
+    linked_list list = list_new(sizeof(data), free_data);
 
     // Add to list head each data
     for(int i=0; i<5; i++){

@@ -7,9 +7,10 @@
 #define VECTOR_GET(vec, index, type) (*((type*) vector_get(vec, index)))
 
 typedef struct vector_s* vector;  // Struct representing a dynamic array
+typedef void (*free_fun)(void*);  // Custom free function
 
 // Allocates memory and fills vector structure
-vector vector_new(size_t elem_size, size_t init_size);
+vector vector_new(size_t elem_size, size_t init_size, free_fun fun);
 
 // Add new element
 void vector_add( vector  v, const void* elem);
@@ -18,7 +19,7 @@ void vector_add( vector  v, const void* elem);
 void* vector_get(const vector  v, const int index);
 
 // Get vector size
-size_t vector_size( vector  v);
+size_t vector_size(const vector  v);
 
 // Set element at index, returns 0 if set, -1 if error
 int vector_set(const vector  v, const int index, const void* elem);
@@ -27,7 +28,7 @@ int vector_set(const vector  v, const int index, const void* elem);
 int vector_remove(vector  v, const int index);
 
 // Frees vector memory
-void vector_delete(vector  v);
+void vector_delete(vector v);
 
 
 #endif // VECTOR_H

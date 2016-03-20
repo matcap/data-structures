@@ -8,9 +8,10 @@ struct list_node{
 
 struct linked_list_s{
     size_t elem_size;           // Size of the element in a node
+    size_t size;                // List size
+    free_fun fun;               // Custom free function
     struct list_node* head;     // Pointer to head of list
     struct list_node* tail;     // Pointer to tail of list
-    size_t size;                // List size
 };
 
 
@@ -27,7 +28,7 @@ struct list_node* get_node_at(linked_list list, const int index){
 }
 
 
-linked_list list_new(size_t elem_size){
+linked_list list_new(size_t elem_size, free_fun fun){
     // Allocate memory for the linked list
     linked_list list = malloc(sizeof(struct linked_list_s));
 
@@ -36,6 +37,7 @@ linked_list list_new(size_t elem_size){
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
+    list->fun = fun;
 
     return list;
 }
@@ -49,6 +51,10 @@ void list_delete(linked_list list){
     struct list_node* next = list->head;
     while(next != NULL){
         struct list_node* temp = next->next;
+        // Custom free
+        if(list->fun != NULL)
+            list->fun(next->elem);
+
         free(next->elem);
         free(next);
         next = temp;
@@ -151,6 +157,9 @@ void list_remove(linked_list list, const int index){
         }
     }
 
+    // Custom free
+    if(list->fun != NULL)
+        list->fun(n->elem);
     // Free node and its element
     free(n->elem);
     free(n);

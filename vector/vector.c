@@ -13,10 +13,11 @@ struct vector_s{
     size_t elem_size;           // Size of a single element
     size_t size;                // Physical number of elements allocated
     size_t used;                // Logical number of elements used
+    free_fun fun;               // Custom free function
     void* base;                 // Vector base pointer
 };
 
-vector vector_new(size_t elem_size, size_t init_size){
+vector vector_new(size_t elem_size, size_t init_size, free_fun fun){
 
     // Allocate memory for vector struct
     vector  v = malloc(sizeof(struct vector_s));
@@ -34,11 +35,19 @@ vector vector_new(size_t elem_size, size_t init_size){
     v->elem_size = elem_size;
     v->size = init_size;
     v->used = 0;
+    v->fun = fun;
 
     return v;
 }
 
 void vector_delete(vector v){
+
+    // Delete elements
+    if(v->fun != NULL)
+        for(int i=0; i<v->used; i++){
+            v->fun(vector_get(v, i));
+        }
+
     // Free allocated memory
     if(v){
         if(v->base)
@@ -93,9 +102,12 @@ int vector_set(const vector v, const int index, const void *elem){
 
 
 int vector_remove(vector v, const int index){
+    // Free element at index
+    if(v->fun != NULL)
+        v->fun(vector_get(v, index));
+
     // Shift back all the elements after index
     if(index < v->used-1){
-
         memmove(((char*)v->base + v->elem_size * index),
                ((char*)v->base + v->elem_size * (index + 1)),
                v->elem_size * (v->used - index - 1));
